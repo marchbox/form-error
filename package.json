@@ -1,0 +1,14 @@
+{
+  "name": "form-error",
+  "module": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "bun --hot server.js"
+  },
+  "devDependencies": {
+    "bun-types": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  }
+}
