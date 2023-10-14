@@ -1,4 +1,4 @@
-Bun.serve({
+const server = Bun.serve({
   port: 4113,
   hostname: 'localhost',
   async fetch(req) {
@@ -26,4 +26,7 @@ Bun.serve({
     });
   }
 });
+
+console.log('Local dev server has started:');
+console.log(`http://localhost:${server.port}`);
 
