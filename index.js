@@ -1,6 +1,8 @@
 export class FormError extends HTMLElement {
-  #htmlFor = null;
-  #pattern = null;
+  #htmlFor = '';
+  #pattern = '';
+
+  #inputEl;
 
   static observedAttributes = [
     'for',
@@ -12,7 +14,9 @@ export class FormError extends HTMLElement {
   }
 
   set htmlFor(value) {
-    this.setAttribute('for', value);
+    if (this.#htmlFor !== value) {
+      this.setAttribute('for', value);
+    }
   }
 
   get pattern() {
@@ -20,11 +24,13 @@ export class FormError extends HTMLElement {
   }
 
   set pattern(value) {
-    this.setAttribute('pattern', value);
+    if (this.#pattern !== value) {
+      this.setAttribute('pattern', value);
+    }
   }
 
   get control() {
-    return document.getElementById(this.htmlFor);
+    return document.getElementById(this.#htmlFor);
   }
 
   connectedCallback() {
@@ -33,7 +39,7 @@ export class FormError extends HTMLElement {
     }
   }
 
-  attributeChangedCallback(name, _, value) {
+  attributeChangedCallback(name) {
     switch (name) {
       case 'for':
         this.#htmlFor = this.getAttribute('for');
@@ -45,7 +51,7 @@ export class FormError extends HTMLElement {
   }
 
   #isHtmlValid() {
-    return this.htmlFor && this.control &&
+    return !!this.#htmlFor && !!this.control &&
         Array.from(this.children).some(ch => ch.nodeName === 'TEMPLATE');
   }
 }
