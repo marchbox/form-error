@@ -1,32 +1,22 @@
-const server = Bun.serve({
-  port: 4113,
-  hostname: 'localhost',
-  async fetch(req) {
-    const url = new URL(req.url);
-    let filename = url.pathname.replace('/', '');
-    let contentType = 'text/html';
+import * as fs from 'node:fs';
+import * as http from 'node:http';
+import * as path from 'node:path';
 
-    if (url.pathname.endsWith('favicon.ico')) {
-      return new Response('', {status: 404});
-    }
+const PORT = 8000;
 
-    if (url.pathname === '/') {
-      filename = 'demo.html';
-    }
+http.createServer(async (req, res) => {
+  let filename = req.url.replace(/^\//, '');
+  let mimetype = 'text/html; charset=UTF-8';
 
-    if (filename.endsWith('.js')) {
-      contentType = 'text/javascript';
-    }
-
-    const file = Bun.file(filename);
-    return new Response(await file.text(), {
-      headers: {
-        'Content-Type': contentType,
-      },
-    });
+  if (!filename) {
+    filename = 'demo.html';
+  } else {
+    mimetype = 'text/javascript';
   }
-});
 
-console.log('Local dev server has started:');
-console.log(`http://localhost:${server.port}`);
+  res.writeHead(200, {'Content-Type': mimetype});
+  fs.createReadStream(filename).pipe(res);
+}).listen(PORT);
+
+console.log(`Server running at http://localhost:${PORT}/`);
 
