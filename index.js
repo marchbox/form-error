@@ -34,6 +34,18 @@ export default class FormError extends HTMLElement {
     }
   }
 
+  get patternAsRegExp() {
+    try {
+      return new RegExp(this.#pattern);
+    } catch {}
+
+    return null;
+  }
+
+  set patternAsRegExp(value) {
+    this.pattern = value instanceof RegExp ? value.source : value.toString();
+  }
+
   get control() {
     return document.getElementById(this.#htmlFor);
   }
