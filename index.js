@@ -4,6 +4,8 @@ export default class FormError extends HTMLElement {
 
   #inputEl;
 
+  #msgNode;
+
   static {
     customElements.define('form-error', this);
   }
@@ -37,7 +39,30 @@ export default class FormError extends HTMLElement {
     return document.getElementById(this.#htmlFor);
   }
 
+  get message() {
+    return this.#msgNode?.textContent || '';
+  }
+
+  set message(value) {
+    if (this.#msgNode?.nodeType !== Node.TEXT_NODE) {
+      this.#msgNode = document.createTextNode('');
+      this.append(this.#msgNode);
+    }
+
+    this.#msgNode.textContent = value.toString();
+  }
+
   connectedCallback() {
+    const initialHtmlFor = this.getAttribute('for');
+    const initialPattern = this.getAttribute('pattern');
+
+    if (initialHtmlFor) {
+      this.#htmlFor = initialHtmlFor;
+    }
+    if (initialPattern) {
+      this.#pattern = initialPattern;
+    }
+
     if (!this.#isHtmlValid()) {
       return;
     }
