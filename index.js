@@ -1,12 +1,12 @@
-export class FormError extends HTMLElement {
-  static {
-    customElements.define('form-error', FormError);
-  }
-
+export default class FormError extends HTMLElement {
   #htmlFor = '';
   #pattern = '';
 
   #inputEl;
+
+  static {
+    customElements.define('form-error', this);
+  }
 
   static observedAttributes = [
     'for',
