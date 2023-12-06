@@ -2,7 +2,8 @@
   "name": "form-error",
   "module": "index.js",
   "type": "module",
+  "license": "ISC",
   "scripts": {
-    "dev": "node server.js --watch-path=index.js --watch-path=demo.html --watch-path=server.js"
+    "dev": "node server.js --watch-path=index.js --watch-path=demo.html"
   }
 }
