@@ -7,14 +7,17 @@ const PORT = 8000;
 http.createServer(async (req, res) => {
   let filename = req.url.replace(/^\//, '');
   let mimetype = 'text/html; charset=UTF-8';
+  let status = 200;
 
   if (!filename) {
     filename = 'demo.html';
-  } else {
+  } else if (filename === 'index.js') {
     mimetype = 'text/javascript';
+  } else {
+    status = 404;
   }
 
-  res.writeHead(200, {'Content-Type': mimetype});
+  res.writeHead(status, status === 404 ? {} : {'Content-Type': mimetype});
   fs.createReadStream(filename).pipe(res);
 }).listen(PORT);
 

@@ -1,4 +1,8 @@
 export class FormError extends HTMLElement {
+  static {
+    customElements.define('form-error', FormError);
+  }
+
   #htmlFor = '';
   #pattern = '';
 
@@ -54,9 +58,5 @@ export class FormError extends HTMLElement {
     return !!this.#htmlFor && !!this.control &&
         Array.from(this.children).some(ch => ch.nodeName === 'TEMPLATE');
   }
-}
-
-if (!customElements.get('form-error')) {
-  customElements.define('form-error', FormError);
 }
 
