@@ -3,7 +3,6 @@ export default class FormError extends HTMLElement {
   #pattern = '';
 
   #inputEl;
-
   #msgNode;
 
   static {
@@ -53,15 +52,7 @@ export default class FormError extends HTMLElement {
   }
 
   connectedCallback() {
-    const initialHtmlFor = this.getAttribute('for');
-    const initialPattern = this.getAttribute('pattern');
-
-    if (initialHtmlFor) {
-      this.#htmlFor = initialHtmlFor;
-    }
-    if (initialPattern) {
-      this.#pattern = initialPattern;
-    }
+    this.#setUpProps();
 
     if (!this.#isHtmlValid()) {
       return;
@@ -76,6 +67,18 @@ export default class FormError extends HTMLElement {
       case 'pattern':
         this.#pattern = this.getAttribute('pattern');
         break;
+    }
+  }
+
+  #setUpProps() {
+    const initialHtmlFor = this.getAttribute('for');
+    const initialPattern = this.getAttribute('pattern');
+
+    if (initialHtmlFor) {
+      this.#htmlFor = initialHtmlFor;
+    }
+    if (initialPattern) {
+      this.#pattern = initialPattern;
     }
   }
 
