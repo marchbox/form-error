@@ -7,15 +7,23 @@
     body {
       font-family: sans-serif;
     }
+
+    form-error {
+      display: block;
+    }
   </style>
 
   <h1><code>&lt;form-error&gt;</code> demo</h1>
 
-  <label for="foo">Foo</label>
-  <input id="foo">
-  <form-error for="foo" pattern="\d">
-    <template>Hello</template>
-  </form-error>
+  <form onsubmit="return false">
+    <label for="foo">Foo</label>
+    <input id="foo" required>
+    <form-error for="foo"></form-error>
+    <form-error for="foo" pattern="\d">
+      <template>Hello</template>
+    </form-error>
+    <button>Submit</button>
+  </form>
 
   <script src="form-error.js" type="module"></script>
 </html>

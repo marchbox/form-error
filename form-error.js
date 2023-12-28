@@ -1,6 +1,16 @@
+// https://developer.mozilla.org/en-US/docs/Web/API/HTMLFormElement/elements#value
+const VALID_CONTROL_ELEMENT_QUERY = [
+  'fieldset',
+  'input:not([type="image"])',
+  'output',
+  'select',
+  'textarea',
+].join(',');
+
 export default class FormError extends HTMLElement {
   #htmlFor = '';
   #pattern = '';
+  #validity = '';
 
   #inputEl;
   #msgNode;
@@ -46,8 +56,22 @@ export default class FormError extends HTMLElement {
     this.pattern = value instanceof RegExp ? value.source : value.toString();
   }
 
+  get validity() {
+    return this.#validity;
+  }
+
+  set validity(value) {
+    if (this.#validity !== value) {
+      this.setAttribute('validity', value);
+    }
+  }
+
   get control() {
     return document.getElementById(this.#htmlFor);
+  }
+
+  get form() {
+    return this.control?.form;
   }
 
   get message() {
@@ -69,6 +93,11 @@ export default class FormError extends HTMLElement {
     if (!this.#isHtmlValid()) {
       return;
     }
+
+    this.control.addEventListener('invalid', evt => {
+      evt.preventDefault();
+      this.#validate();
+    });
   }
 
   attributeChangedCallback(name) {
@@ -79,6 +108,17 @@ export default class FormError extends HTMLElement {
       case 'pattern':
         this.#pattern = this.getAttribute('pattern');
         break;
+      case 'validity':
+        this.#validity = this.getAttribute('validity');
+        break;
+    }
+  }
+
+  // TODO
+  #validate() {
+    if (this.validity) {
+    } else if (this.pattern) {
+    } else {
     }
   }
 
@@ -96,6 +136,7 @@ export default class FormError extends HTMLElement {
 
   #isHtmlValid() {
     return !!this.#htmlFor && !!this.control &&
+        this.control.matches(VALID_CONTROL_ELEMENT_QUERY) &&
         Array.from(this.children).some(ch => ch.nodeName === 'TEMPLATE');
   }
 }
