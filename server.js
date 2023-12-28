@@ -6,22 +6,28 @@ import * as process from 'node:process';
 const PORT = 8000;
 let isInit = true;
 
+const EXT_2_MIME = new Map([
+  ['html', 'text/html; charset=UTF-8'],
+  ['js', 'text/javascript'],
+  ['css', 'text/css'],
+  ['ico', 'image/x-icon'],
+]);
+
 http.createServer(async (req, res) => {
-  let filename = req.url.replace(/^\//, '');
-  let mimetype = 'text/html; charset=UTF-8';
-  let status = 200;
+  console.log(`${req.method}: ${req.url}`);
 
-  if (!filename) {
-    filename = 'demo.html';
-  } else if (filename === 'index.js') {
-    mimetype = 'text/javascript';
+  const filename = req.url.replace(/^\//, '');
+  const ext = filename.split('.')[1];
+  const mimetype = EXT_2_MIME.get(ext) ?? 'text/plain';
+
+  if (fs.existsSync(filename)) {
+    res.writeHead(200, {'Content-Type': mimetype});
+    fs.createReadStream(filename).pipe(res);
   } else {
-    status = 404;
+    res.writeHead(404);
+    res.end();
   }
-
-  res.writeHead(status, status === 404 ? {} : {'Content-Type': mimetype});
-  fs.createReadStream(filename).pipe(res);
 }).listen(PORT);
 
-console.log(`Server running at http://localhost:${PORT}/`);
+console.log(`Server running at http://localhost:${PORT}/demo.html`);
 

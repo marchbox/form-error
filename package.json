@@ -4,9 +4,9 @@
   "type": "module",
   "license": "ISC",
   "scripts": {
-    "dev": "node server.js --watch-path=index.js --watch-path=demo.html",
-    "test": "node --test index.spec.js",
-    "test:watch": "node --test --watch index.spec.js"
+    "dev": "node server.js --watch-path=form-error.js --watch-path=demo.html",
+    "test": "node --test form-error.spec.js",
+    "test:watch": "node --test --watch form-error.spec.js"
   },
   "devDependencies": {}
 }
