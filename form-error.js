@@ -108,9 +108,6 @@ export default class FormError extends HTMLElement {
       evt.preventDefault();
       this.#validate();
     });
-
-    this.form?.addEventListener('submit', evt => {
-    });
   }
 
   attributeChangedCallback(name) {
