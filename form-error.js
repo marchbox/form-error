@@ -31,6 +31,7 @@ export default class FormError extends HTMLElement {
   static observedAttributes = [
     'for',
     'pattern',
+    'validity',
   ];
 
   get htmlFor() {
@@ -106,6 +107,9 @@ export default class FormError extends HTMLElement {
     this.control.addEventListener('invalid', evt => {
       evt.preventDefault();
       this.#validate();
+    });
+
+    this.form?.addEventListener('submit', evt => {
     });
   }
 
