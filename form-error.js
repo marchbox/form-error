@@ -7,6 +7,15 @@ const VALID_CONTROL_ELEMENT_QUERY = [
   'textarea',
 ].join(',');
 
+// kabab-case to cammelCase
+function normalizeValidity(value) {
+  if (!value.includes('-')) {
+    return value;
+  }
+
+  return value.toLowerCase().replace(/-(\w)/g, (_, l) => l.toUpperCase());
+}
+
 export default class FormError extends HTMLElement {
   #htmlFor = '';
   #pattern = '';
@@ -114,17 +123,33 @@ export default class FormError extends HTMLElement {
     }
   }
 
-  // TODO
   #validate() {
-    if (this.validity) {
-    } else if (this.pattern) {
+    if (this.control.validity.valid) {
+      this.message = '';
+    } else if (this.#validity) {
+      if (!this.control.validity[normalizeValidity(this.validity)]) {
+        return;
+      }
+
+      const template = this.querySelector('template');
+
+      if (!template) {
+        this.message = this.control.validationMessage;
+        return;
+      }
+
+      this.message = template.content.cloneNode(true).textContent;
+    } else if (this.#pattern) {
+      // TODO
     } else {
+      this.message = this.control.validationMessage;
     }
   }
 
   #setUpProps() {
     const initialHtmlFor = this.getAttribute('for');
     const initialPattern = this.getAttribute('pattern');
+    const initialValidity = this.getAttribute('validity');
 
     if (initialHtmlFor) {
       this.#htmlFor = initialHtmlFor;
@@ -132,12 +157,14 @@ export default class FormError extends HTMLElement {
     if (initialPattern) {
       this.#pattern = initialPattern;
     }
+    if (initialValidity) {
+      this.#validity = initialValidity;
+    }
   }
 
   #isHtmlValid() {
     return !!this.#htmlFor && !!this.control &&
-        this.control.matches(VALID_CONTROL_ELEMENT_QUERY) &&
-        Array.from(this.children).some(ch => ch.nodeName === 'TEMPLATE');
+        this.control.matches(VALID_CONTROL_ELEMENT_QUERY);
   }
 }
 

@@ -10,6 +10,7 @@
 
     form-error {
       display: block;
+      min-block-size: 1lh;
     }
   </style>
 
@@ -18,10 +19,21 @@
   <form onsubmit="return false">
     <label for="foo">Foo</label>
     <input id="foo" required>
-    <form-error for="foo"></form-error>
-    <form-error for="foo" pattern="\d">
-      <template>Hello</template>
-    </form-error>
+    <ol>
+      <li>
+        <form-error for="foo"></form-error>
+      </li>
+      <li>
+        <form-error for="foo" validity="value-missing">
+          <template>Value missing</template>
+        </form-error>
+      </li>
+      <li>
+        <form-error for="foo" pattern="\d">
+          <template>Hello</template>
+        </form-error>
+      </li>
+    </ol>
     <button>Submit</button>
   </form>
 

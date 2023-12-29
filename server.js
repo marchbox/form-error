@@ -14,7 +14,7 @@ const EXT_2_MIME = new Map([
 ]);
 
 http.createServer(async (req, res) => {
-  console.log(`${req.method}: ${req.url}`);
+  console.log(`${req.method} ${req.url}`);
 
   const filename = req.url.replace(/^\//, '');
   const ext = filename.split('.')[1];
