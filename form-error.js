@@ -1,3 +1,5 @@
+import FormErrorRegistry from './registry.js';
+
 // https://developer.mozilla.org/en-US/docs/Web/API/HTMLFormElement/elements#value
 const VALID_CONTROL_ELEMENT_QUERY = [
   'fieldset',
@@ -21,6 +23,7 @@ export default class FormError extends HTMLElement {
   #pattern = '';
   #validity = '';
 
+  #registry;
   #inputEl;
   #msgNode;
 
@@ -95,6 +98,17 @@ export default class FormError extends HTMLElement {
     }
 
     this.#msgNode.textContent = value.toString();
+  }
+
+  constructor() {
+    super();
+
+    if (!window['__FORM_ERROR_REGISTRY__']) {
+      window['__FORM_ERROR_REGISTRY__'] = new FormErrorRegistry();
+    }
+
+    this.#registry = window['__FORM_ERROR_REGISTRY__'];
+    this.#registry.register(this);
   }
 
   connectedCallback() {
