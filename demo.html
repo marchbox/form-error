@@ -37,6 +37,11 @@
         <input id="bar" pattern="\d+" required title="Numbers only">
         <ul>
           <li><form-error for="bar"></form-error></li>
+          <li>
+            <form-error for="bar" validity="patternMismatch">
+              <template>Only use numbers</template>
+            </form-error>
+          </li>
         </ul>
       </li>
     </ol>

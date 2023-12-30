@@ -69,7 +69,12 @@ export default class FormError extends HTMLElement {
     this.control.addEventListener('invalid', evt => {
       evt.preventDefault();
 
-      if (this.control.validity.patternMismatch && this.control.title) {
+      if (this.#validity && !this.control.validity[k2c(this.#validity)]) {
+        return;
+      }
+
+      if (this.control.validity.patternMismatch && this.control.title &&
+          !this.querySelector('template')) {
         this.#setMessage(this.control.title);
       } else {
         const customMessage = this.querySelector('template')?.content
