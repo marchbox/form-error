@@ -87,8 +87,10 @@ export default class FormError extends HTMLElement {
       this.#maybeClear();
     });
 
-    this.form.addEventListener('submit', () => {
-      this.#maybeClear();
+    this.control.addEventListener('keydown', evt => {
+      if (evt.key === 'Enter') {
+        this.#maybeClear();
+      }
     });
   }
 
