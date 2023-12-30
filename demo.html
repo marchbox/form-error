@@ -9,7 +9,7 @@
     }
 
     form-error {
-      display: block;
+      display: inline-block;
       min-block-size: 1lh;
     }
   </style>
@@ -17,21 +17,27 @@
   <h1><code>&lt;form-error&gt;</code> demo</h1>
 
   <form onsubmit="return false">
-    <label for="foo">Foo</label>
-    <input id="foo" required>
     <ol>
       <li>
-        <form-error for="foo"></form-error>
+        <label for="foo">Foo</label>
+        <input id="foo" required>
+        <ul>
+          <li>
+            <form-error for="foo"></form-error>
+          </li>
+          <li>
+            <form-error for="foo" validity="value-missing">
+              <template>Value missing</template>
+            </form-error>
+          </li>
+        </ul>
       </li>
       <li>
-        <form-error for="foo" validity="value-missing">
-          <template>Value missing</template>
-        </form-error>
-      </li>
-      <li>
-        <form-error for="foo" pattern="\d">
-          <template>Hello</template>
-        </form-error>
+        <label for="bar">Bar</label>
+        <input id="bar" pattern="\d+" required title="Numbers only">
+        <ul>
+          <li><form-error for="bar"></form-error></li>
+        </ul>
       </li>
     </ol>
     <button>Submit</button>
