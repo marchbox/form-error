@@ -69,30 +69,26 @@ export default class FormError extends HTMLElement {
     this.control.addEventListener('invalid', evt => {
       evt.preventDefault();
 
-      if (this.#validity && !this.control.validity[k2c(this.#validity)]) {
+      if (!this.#hasMatchingValidity()) {
         return;
       }
 
       if (this.control.validity.patternMismatch && this.control.title &&
           !this.querySelector('template')) {
-        this.#setMessage(this.control.title);
+        this.#show(this.control.title);
       } else {
         const customMessage = this.querySelector('template')?.content
             .cloneNode(true).textContent;
-        this.#setMessage(customMessage ?? this.control.validationMessage);
+        this.#show(customMessage ?? this.control.validationMessage);
       }
     });
 
     this.control.addEventListener('blur', () => {
-      if (this.control.validity.valid) {
-        this.#setMessage('');
-      }
+      this.#maybeClear();
     });
 
     this.form.addEventListener('submit', () => {
-      if (this.control.validity.valid) {
-        this.#setMessage('');
-      }
+      this.#maybeClear();
     });
   }
 
@@ -107,13 +103,30 @@ export default class FormError extends HTMLElement {
     }
   }
 
-  #setMessage(value) {
+  #show(value) {
     if (this.#msgNode?.nodeType !== Node.TEXT_NODE) {
       this.#msgNode = document.createTextNode('');
       this.append(this.#msgNode);
     }
 
     this.#msgNode.textContent = value.toString();
+
+    if (value !== '') {
+      this.dispatchEvent(new CustomEvent('errorshow', {bubbles: true}));
+    }
+  }
+
+  #maybeClear() {
+    if (this.control.validity.valid || !this.#hasMatchingValidity()) {
+      this.#show('');
+
+      this.dispatchEvent(new CustomEvent('errorclear', {bubbles: true}));
+    }
+  }
+
+  #hasMatchingValidity() {
+    return !this.#validity ||
+        (this.#validity && this.control.validity[k2c(this.#validity)]);
   }
 
   #setUpProps() {

@@ -38,6 +38,11 @@
         <ul>
           <li><form-error for="bar"></form-error></li>
           <li>
+            <form-error for="bar" validity="valueMissing">
+              <template>Enter something</template>
+            </form-error>
+          </li>
+          <li>
             <form-error for="bar" validity="patternMismatch">
               <template>Only use numbers</template>
             </form-error>
