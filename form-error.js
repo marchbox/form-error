@@ -93,6 +93,10 @@ export default class FormError extends HTMLElement {
         this.#maybeClear();
       }
     });
+
+    this.control.form?.addEventListener('reset', () => {
+      this.#clear();
+    });
   }
 
   attributeChangedCallback(name) {
@@ -119,11 +123,15 @@ export default class FormError extends HTMLElement {
     }
   }
 
+  #clear() {
+    this.#show('');
+
+    this.dispatchEvent(new CustomEvent('errorclear', {bubbles: true}));
+  }
+
   #maybeClear() {
     if (this.control.validity.valid || !this.#hasMatchingValidity()) {
-      this.#show('');
-
-      this.dispatchEvent(new CustomEvent('errorclear', {bubbles: true}));
+      this.#clear();
     }
   }
 
