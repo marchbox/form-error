@@ -49,6 +49,23 @@
           </li>
         </ul>
       </li>
+      <li>
+        <label><input type="checkbox" required id="tos"> I agree</label>
+        <div>
+          <form-error for="tos"></form-error>
+        </div>
+      </li>
+      <li>
+        <fieldset id="which">
+          <legend>Which one?</legend>
+          <ul>
+            <li><label><input type="radio" required name="which" value="dog"> Dog</label></li>
+            <li><label><input type="radio" required name="which" value="cat"> Cat</label></li>
+            <li><label><input type="radio" required name="which" value="fish"> Fish</label></li>
+          </ul>
+        </fieldset>
+        <form-error for="which"></form-error>
+      </li>
     </ol>
     <button>Submit</button>
   </form>

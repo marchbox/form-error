@@ -2,7 +2,6 @@
 const VALID_CONTROL_ELEMENT_QUERY = [
   'fieldset',
   'input:not([type="image"])',
-  'output',
   'select',
   'textarea',
 ].join(',');
@@ -65,6 +64,8 @@ export default class FormError extends HTMLElement {
     if (!this.#isHtmlValid()) {
       return;
     }
+
+    // TODO: Handle when the control element is a <fieldset>
 
     this.control.addEventListener('invalid', evt => {
       evt.preventDefault();
