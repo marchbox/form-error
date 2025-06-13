@@ -1,160 +1,199 @@
 // https://developer.mozilla.org/en-US/docs/Web/API/HTMLFormElement/elements#value
 const VALID_CONTROL_ELEMENT_QUERY = [
-  'fieldset',
-  'input:not([type="image"])',
-  'select',
-  'textarea',
-].join(',');
+	"fieldset",
+	'input:not([type="image"])',
+	"select",
+	"textarea",
+].join(",");
 
 // kabab-case to cammelCase
 function k2c(value) {
-  if (!value.includes('-')) {
-    return value;
-  }
+	if (!value.includes("-")) {
+		return value;
+	}
 
-  return value.toLowerCase().replace(/-(\w)/g, (_, l) => l.toUpperCase());
+	return value.toLowerCase().replace(/-(\w)/g, (_, l) => l.toUpperCase());
 }
 
 export default class FormError extends HTMLElement {
-  #htmlFor = '';
-  #validity = '';
+	#htmlFor = "";
+	#validity = "";
 
-  #msgNode;
+	#msgNode;
+	#disconnectedAbortController = new AbortController();
+	#connectedControlAbortController = new AbortController();
 
-  static {
-    customElements.define('form-error', this);
-  }
+	static {
+		// biome-ignore lint/complexity/noThisInStatic: simplified regisstration
+		customElements.define("form-error", this);
+	}
 
-  static observedAttributes = [
-    'for',
-    'validity',
-  ];
+	static observedAttributes = ["for", "validity"];
 
-  get control() {
-    return document.getElementById(this.#htmlFor);
-  }
+	get control() {
+		return document.getElementById(this.#htmlFor);
+	}
 
-  get form() {
-    return this.control?.form;
-  }
+	get form() {
+		return this.control?.form;
+	}
 
-  get htmlFor() {
-    return this.#htmlFor;
-  }
+	get htmlFor() {
+		return this.#htmlFor;
+	}
 
-  set htmlFor(value) {
-    if (this.#htmlFor !== value) {
-      this.setAttribute('for', value);
-    }
-  }
+	set htmlFor(value) {
+		if (this.#htmlFor !== value) {
+			this.setAttribute("for", value);
+		}
+	}
 
-  get validity() {
-    return this.#validity;
-  }
+	get validity() {
+		return this.#validity;
+	}
 
-  set validity(value) {
-    if (this.#validity !== value) {
-      this.setAttribute('validity', value);
-    }
-  }
+	set validity(value) {
+		if (this.#validity !== value) {
+			this.setAttribute("validity", value);
+		}
+	}
 
-  connectedCallback() {
-    this.#setUpProps();
+	connectedCallback() {
+		this.#setUpProps();
 
-    if (!this.#isHtmlValid()) {
-      return;
-    }
+		if (!this.#isHtmlValid()) {
+			return;
+		}
 
-    // TODO: Handle when the control element is a <fieldset>
+		this.#connectToControl();
+	}
 
-    this.control.addEventListener('invalid', evt => {
-      evt.preventDefault();
+	disconnectedCallback() {
+		this.#disconnectedAbortController.abort();
+		this.#connectedControlAbortController.abort();
+	}
 
-      if (!this.#hasMatchingValidity()) {
-        return;
-      }
+	attributeChangedCallback(name) {
+		switch (name) {
+			case "for":
+				this.#htmlFor = this.getAttribute("for");
+				this.#clear();
+				if (this.control) {
+					this.#connectedControlAbortController.abort();
+					this.#connectToControl();
+				}
+				break;
+			case "validity":
+				this.#validity = this.getAttribute("validity");
+				break;
+		}
+	}
 
-      if (this.control.validity.patternMismatch && this.control.title &&
-          !this.querySelector('template')) {
-        this.#show(this.control.title);
-      } else {
-        const customMessage = this.querySelector('template')?.content
-            .cloneNode(true).textContent;
-        this.#show(customMessage ?? this.control.validationMessage);
-      }
-    });
+	#show(value) {
+		if (this.#msgNode?.nodeType !== Node.TEXT_NODE) {
+			this.#msgNode = document.createTextNode("");
+			this.append(this.#msgNode);
+		}
 
-    this.control.addEventListener('blur', () => {
-      this.#maybeClear();
-    });
+		this.#msgNode.textContent = value.toString();
 
-    this.control.addEventListener('keydown', evt => {
-      if (evt.key === 'Enter') {
-        this.#maybeClear();
-      }
-    });
+		if (value !== "") {
+			this.dispatchEvent(new CustomEvent("errorshow", { bubbles: true }));
+		}
+	}
 
-    this.control.form?.addEventListener('reset', () => {
-      this.#clear();
-    });
-  }
+	#clear() {
+		this.#show("");
 
-  attributeChangedCallback(name) {
-    switch (name) {
-      case 'for':
-        this.#htmlFor = this.getAttribute('for');
-        break;
-      case 'validity':
-        this.#validity = this.getAttribute('validity');
-        break;
-    }
-  }
+		this.dispatchEvent(new CustomEvent("errorclear", { bubbles: true }));
+	}
 
-  #show(value) {
-    if (this.#msgNode?.nodeType !== Node.TEXT_NODE) {
-      this.#msgNode = document.createTextNode('');
-      this.append(this.#msgNode);
-    }
+	#maybeClear() {
+		if (this.control.validity.valid || !this.#hasMatchingValidity()) {
+			this.#clear();
+		}
+	}
 
-    this.#msgNode.textContent = value.toString();
+	#hasMatchingValidity() {
+		return (
+			!this.#validity ||
+			(this.#validity && this.control.validity[k2c(this.#validity)])
+		);
+	}
 
-    if (value !== '') {
-      this.dispatchEvent(new CustomEvent('errorshow', {bubbles: true}));
-    }
-  }
+	#setUpProps() {
+		const initialHtmlFor = this.getAttribute("for");
+		const initialValidity = this.getAttribute("validity");
 
-  #clear() {
-    this.#show('');
+		if (initialHtmlFor) {
+			this.#htmlFor = initialHtmlFor;
+		}
+		if (initialValidity) {
+			this.#validity = initialValidity;
+		}
+	}
 
-    this.dispatchEvent(new CustomEvent('errorclear', {bubbles: true}));
-  }
+	#isHtmlValid() {
+		return (
+			!!this.#htmlFor &&
+			!!this.control &&
+			this.control.matches(VALID_CONTROL_ELEMENT_QUERY)
+		);
+	}
 
-  #maybeClear() {
-    if (this.control.validity.valid || !this.#hasMatchingValidity()) {
-      this.#clear();
-    }
-  }
+	#connectToControl() {
+		const { signal } = this.#connectedControlAbortController;
 
-  #hasMatchingValidity() {
-    return !this.#validity ||
-        (this.#validity && this.control.validity[k2c(this.#validity)]);
-  }
+		// TODO: Handle when the control element is a <fieldset>
 
-  #setUpProps() {
-    const initialHtmlFor = this.getAttribute('for');
-    const initialValidity = this.getAttribute('validity');
+		this.control?.addEventListener(
+			"invalid",
+			(evt) => {
+				evt.preventDefault();
 
-    if (initialHtmlFor) {
-      this.#htmlFor = initialHtmlFor;
-    }
-    if (initialValidity) {
-      this.#validity = initialValidity;
-    }
-  }
+				if (!this.#hasMatchingValidity()) {
+					return;
+				}
 
-  #isHtmlValid() {
-    return !!this.#htmlFor && !!this.control &&
-        this.control.matches(VALID_CONTROL_ELEMENT_QUERY);
-  }
+				if (
+					this.control.validity.patternMismatch &&
+					this.control.title &&
+					!this.querySelector("template")
+				) {
+					this.#show(this.control.title);
+				} else {
+					const customMessage =
+						this.querySelector("template")?.content.cloneNode(true).textContent;
+					this.#show(customMessage ?? this.control.validationMessage);
+				}
+			},
+			{ signal },
+		);
+
+		this.control?.addEventListener(
+			"blur",
+			() => {
+				this.#maybeClear();
+			},
+			{ signal },
+		);
+
+		this.control?.addEventListener(
+			"keydown",
+			(evt) => {
+				if (evt.key === "Enter") {
+					this.#maybeClear();
+				}
+			},
+			{ signal },
+		);
+
+		this.control?.form?.addEventListener(
+			"reset",
+			() => {
+				this.#clear();
+			},
+			{ signal },
+		);
+	}
 }
-

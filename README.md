@@ -1,13 +1,4 @@
 # form-error
 
-To install dependencies:
-
-```bash
-yarn
-```
-
-To run:
-
-```bash
-yarn dev
-```
+[Proposal](./proposal.md) for the new `<error>` HTML element. And a custom
+element (`<form-error>`) as the demo. 
