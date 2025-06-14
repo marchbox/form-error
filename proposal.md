@@ -28,14 +28,13 @@ When an `<error>` element is associated to an form control element (through the 
 
 The element behaves differently depending on its content:
 
-| Author content | `validity` has value? | Form control validity | Display content |
-|:--|:--|:--|:--|
-| Empty or `<template>` | No | When any invalid | Built-in validation message |
-| Empty | Yes | When matching | Built-in validation message |
-| Text | (Ignored) | Forced to be `customError` | Author’s text content |
-| `<template>` | Yes | When matching | The `<template>`’s content |
-
-Note: in the first case (empty or `<template>`, and no `validity` attribute value), the `<template>` is ignored.
+| Author content | `validity` attribute has value? | Form control’s validity needed to display content | Display content |
+|-|-|-|-|
+| Empty | No | Any invalid  | Built-in validation message |
+| Empty | Yes | Matching `validity` attribute | Built-in validation message |
+| `<template>` | No | Any invalid  | Built-in validation message (`<template>` is ignored) |
+| `<template>` | Yes | Matching `validity` attribute | The `<template>`’s content |
+| Text | (Ignored) | Always `customError` | Author’s text content |
 
 ### Accessibility
 
