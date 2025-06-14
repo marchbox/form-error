@@ -42,7 +42,7 @@ The element behaves differently depending on its content:
 | `<template>` | Yes | Matching `validity` attribute | The `<template>`’s content |
 | Text | (Ignored) | Always `customError` | Author’s text content |
 
-If multiple `<error>` elements associated to the same form control meet the display content condition, the last `<error>` element will be shown.
+If multiple `<error>` elements associated to the same form control meet the display content condition, all of the `<error>` elements will be shown.
 
 If the associated form control is disabled, the `<error>` element becomes hidden.
 
@@ -79,7 +79,7 @@ A new property, `errors`, on `HTMLInputElement`, `HTMLSelectElement`, `HTMLButto
 
 ### As an error container
 
-If an `<error>` element has no `validity` attribute or any content, it behaves as a placeholder element to display validation messages when needed, e.g. its connected `<input>` has an `invalid` state.
+If an `<error>` element has no `validity` attribute or any content, it behaves as a placeholder element to display validation messages when needed.
 
 ```html
 <label for="email">Email</label>
@@ -87,7 +87,13 @@ If an `<error>` element has no `validity` attribute or any content, it behaves a
 <error for="email"></error>
 ```
 
-When `<input>` becomes invalid, browser adds the built-in validation message to the `<error>` element and sets its `display` to `block`.
+If an `<error>` element has `validity` but no content, only the built-in validation messages for matching validities will be displayed.
+
+```html
+<label for="email">Email</label>
+<input name="email" id="email" type="email" required>
+<error for="email" validity="valuemissing typemismatch"></error>
+```
 
 ### Override built-in validation messages
 
@@ -131,9 +137,6 @@ Authors can connect multiple `<error>` elements to the same `<input>` element.
 <error for="email" validity="customerror">
   <template>Must use an @example.com email</template>
 </error>
-
-<!-- Container for all other errors, in this case, the built-in `valueMissing`'s validation message will be displayed here -->
-<error for="email"></error>
 ```
 
 ### Use the same message for multiple validities
