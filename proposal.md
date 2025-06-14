@@ -36,10 +36,12 @@ The element behaves differently depending on its content:
 | `<template>` | Yes | Matching `validity` attribute | The `<template>`’s content |
 | Text | (Ignored) | Always `customError` | Author’s text content |
 
+If multiple `<error>` elements associated to the same form control meet the same condition, the last `<error>` element would be activated.
+
 ### Accessibility
 
 * The element has an implicit ARIA Role: ==TODO: Check ARIA spec on which role is appropriate==
-* When the element is associated with a form control element by the `for` attribute, e.g. `<error for="my-input">…</error>`, the element is automatically added to the form element’s `ariaDescribedByElements` array
+* When the element is associated with a form control element by the `for` attribute, e.g. `<error for="my-input">…</error>`, the element is automatically added to the form element’s `ariaDescribedByElements` array ==TODO: this might need to be updated to `aria-errormessage` related property==
 * The element has an implicit `aria-live` value as `assertive`, this can be overridden by author by explicitly adding an `aria-live` attribute
 
 ### Attributes
@@ -66,11 +68,15 @@ interface HTMLErrorElement {
 
 ### DOM events
 
+`toggle`
+
 ==TODO==
 
 ### CSS Pseudo classes
 
 ==TODO==
+
+`:error-show`
 
 ## New `errors` property on form control elements
 
