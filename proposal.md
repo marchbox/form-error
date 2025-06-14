@@ -29,7 +29,7 @@ When an `<error>` element is associated to an form control element (through the 
 The element behaves differently depending on its content:
 
 | Author content | `validity` attribute has value? | Form control’s validity needed to display content | Display content |
-|-|-|-|-|
+|:-|:-|:-|:-|
 | Empty | No | Any invalid  | Built-in validation message |
 | Empty | Yes | Matching `validity` attribute | Built-in validation message |
 | `<template>` | No | Any invalid  | Built-in validation message (`<template>` is ignored) |
