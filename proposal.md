@@ -28,11 +28,14 @@ When an `<error>` element is associated to an form control element (through the 
 
 The element behaves differently depending on its content:
 
-* Empty: when its associated form control is invalid, built-in validation messages will be displayed as the content.
-* Empty and the `validity` attribute has value: when its associated form control is invalid and its validity matches the `validity` value (case-insensitive), the built-in validation message will be displayed as the content.
-* Text content: triggers the associated form control’s invalid state with `customError` validity, the `validity` attribute is ignored if present.
-* A `<template>` and the `validity` attribute has value: when its associated form control is invalid and its validity matches the `validity` value (case-insensitive), the content inside `<template>` will be displayed as the content.
-* Otherwise: the element never becomes visible and should be ignored by the accessibility tree.
+| Author content | `validity` has value? | Form control validity | Display content |
+|:--|:--|:--|:--|
+| Empty or `<template>` | No | When any invalid | Built-in validation message |
+| Empty | Yes | When matching | Built-in validation message |
+| Text | (Ignored) | Forced to be `customError` | Author’s text content |
+| `<template>` | Yes | When matching | The `<template>`’s content |
+
+Note: in the first case (empty or `<template>`, and no `validity` attribute value), the `<template>` is ignored.
 
 ### Accessibility
 
