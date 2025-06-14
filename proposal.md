@@ -10,15 +10,14 @@ However, the current Constraint Validation API has a few shortcomings:
 * Unable to customize the wording of built-in validation message
 * While the `pattern` attribute can be powerful, it’s tied to a single validity state (`ValidityState.patternMismatch`), hence it’s limited to a single validation message (either the built-in message or a custom message with `title` attribute) without JavaScript
 * No declarative way to add custom validation messages
-* A validation message is limited to pure text, but sometimes it can be helpful to have richer content like a link to details of the error message
 * Accessibility issues ==TODO: check the details==
 
 ## Goal
 
 * Provide a declarative way to add validation messages to HTML (both built-in and custom messages for built-in validity states)
 * Enable styling of a validation message with CSS
-* Provide a declarative way to add custom validity messages based on user inputs and allows richer content other than pure text
-* Compliant with WCAG 2.3
+* Support server side rendered error that also sets the associated form control to invalid state
+* Compliant with WCAG 2.2
 
 ## The `<error>` element
 
@@ -148,3 +147,9 @@ When a form control is server-side rendered with an invalid state, put the valid
 <input type="email" id="email" name="email" value="foo@example.com">
 <error for="email">Must use an @sample.com email address</error>
 ```
+
+## Pending questions
+
+* Alternative names: `<formerror>`, `<validationmessage>`
+* Should HTML elements be allowed as children, e.g. `<a>`, `<ul>`, etc.?
+* For a server side rendered error (`<error>` with text content), should there be a declarative way to clear the error?
