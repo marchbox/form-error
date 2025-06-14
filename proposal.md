@@ -44,36 +44,32 @@ The element behaves differently depending on its content:
 
 If multiple `<error>` elements associated to the same form control meet the display content condition, the last `<error>` element will be shown.
 
-==TODO: what to do if the form control is disabled?==
+If the associated form control is disabled, the `<error>` element becomes hidden.
 
 ### Accessibility
 
-* The element has an implicit ARIA Role: ==TODO: Check ARIA spec on which role is appropriate==
-* When the element is associated with a form control element by the `for` attribute, e.g. `<error for="my-input">…</error>`, the element is automatically added to the form element’s `ariaDescribedByElements` array ==TODO: this might need to be updated to `aria-errormessage` related property==
-* The element has an implicit `aria-live` value as `assertive`, this can be overridden by author by explicitly adding an `aria-live` attribute
+* The element has an implicit ARIA role of `alert` (which makes it a live region)
+* The element is added to the form element’s `ariaErrorMessageElements`
 
 ### DOM interface
 
-```
+```ts
 interface HTMLErrorElement {
   readonly control: HTMLElement;
   readonly form: HTMLFormElement | null;
+  readonly content: DocumentFragment;
   htmlFor: IDREF;
   validity: DOMTokenList;
 }
 ```
 
-### DOM events
+### The `toggle` event
 
-`toggle`
+A `ToggleEvent` dispatches when the `<error>` element’s visibility changed.
 
-==TODO==
+### The CSS `:error-show` pseudo class
 
-### CSS pseudo classes
-
-==TODO==
-
-`:error-show`
+When the `<error>` is shown, this pseudo class is selected.
 
 ## New `errors` property on form control elements
 
@@ -138,6 +134,18 @@ Authors can connect multiple `<error>` elements to the same `<input>` element.
 
 <!-- Container for all other errors, in this case, the built-in `valueMissing`'s validation message will be displayed here -->
 <error for="email"></error>
+```
+
+### Use the same message for multiple validities
+
+Authors can provide multiple validities for an `<error>` element.
+
+```html
+<label for="email">Email</label>
+<input name="email" id="email" type="email" required>
+<error for="email" validity="valuemissing typemismatch">
+  <template>Required to enter a valid email</template>
+</error>
 ```
 
 ### Display custom validation message
