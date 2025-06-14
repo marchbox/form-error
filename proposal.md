@@ -24,6 +24,14 @@ However, the current Constraint Validation API has a few shortcomings:
 
 The container of the validation message for its associated form control. The element can only contain pure text content or a `<template>` element, any other HTML elements would be ignored.
 
+### Attributes
+
+* Global attributes
+* `for`: an IDREF string referencing the associated form control element
+* `validity`: a DOMTokenList of built-in validities
+
+### Behaviors
+
 When an `<error>` element is associated to an form control element (through the `for` attribute), author is opted in to use the `<error>` element to display validation messages instead of the pop up UI. When `setCustomValidity()` is called, the message will be displayed in the `<error>` element as well.
 
 The element behaves differently depending on its content:
@@ -36,21 +44,13 @@ The element behaves differently depending on its content:
 | `<template>` | Yes | Matching `validity` attribute | The `<template>`’s content |
 | Text | (Ignored) | Always `customError` | Author’s text content |
 
-If multiple `<error>` elements associated to the same form control meet the same condition, the last `<error>` element would be activated.
+If multiple `<error>` elements associated to the same form control meet the display content condition, the last `<error>` element will be shown.
 
 ### Accessibility
 
 * The element has an implicit ARIA Role: ==TODO: Check ARIA spec on which role is appropriate==
 * When the element is associated with a form control element by the `for` attribute, e.g. `<error for="my-input">…</error>`, the element is automatically added to the form element’s `ariaDescribedByElements` array ==TODO: this might need to be updated to `aria-errormessage` related property==
 * The element has an implicit `aria-live` value as `assertive`, this can be overridden by author by explicitly adding an `aria-live` attribute
-
-### Attributes
-
-* Global attributes
-* `for`: value is `IDREF`, referencing the associated form control element
-* `validity`: a DOMTokenList of built-in validities
-	* when defined, the `<error>` element will only display its content when the associated form control element has the matching validity
-	* when absent, the `<error>` element will display the built-in validation messages when the associated form control is invalid
 
 ### DOM Interface
 
@@ -60,11 +60,8 @@ interface HTMLErrorElement {
   readonly form: HTMLFormElement | null;
   htmlFor: IDREF;
   validity: DOMTokenList;
-  validator: element: HTMLErrorElement => booean;
 }
 ```
-
-==TODO: add details==
 
 ### DOM events
 
@@ -135,7 +132,7 @@ Authors can connect multiple `<error>` elements to the same `<input>` element.
 </error>
 
 <!-- Custom error -->
-<error for="email">
+<error for="email" validity="customerror">
   <template>Must use an @example.com email</template>
 </error>
 
