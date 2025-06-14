@@ -8,7 +8,6 @@ However, the current Constraint Validation API has a few shortcomings:
 
 * Unable to customize the look-and-feel of the built-in validation message display
 * Unable to customize the wording of built-in validation message
-* While the `pattern` attribute can be powerful, it’s tied to a single validity state (`ValidityState.patternMismatch`), hence it’s limited to a single validation message (either the built-in message or a custom message with `title` attribute) without JavaScript
 * No declarative way to add custom validation messages
 * Accessibility issues ==TODO: check the details==
 
@@ -155,3 +154,4 @@ When a form control is server-side rendered with an invalid state, put the valid
 * Alternative names: `<formerror>`, `<validationmessage>`
 * Should HTML elements be allowed as children, e.g. `<a>`, `<ul>`, etc.?
 * For a server side rendered error (`<error>` with text content), should there be a declarative way to clear the error?
+* Should there be a declarative way to define multiple custom errors? For example, using regular expressions in an attribute like `pattern` or `match`?
