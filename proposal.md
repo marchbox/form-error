@@ -22,9 +22,17 @@ However, the current Constraint Validation API has a few shortcomings:
 
 ## The `<error>` element
 
-The container of the validation message for its associated form control. The element can only contain pure text content, any other HTML elements would be ignored. ==Should inline elements allowed?==
+The container of the validation message for its associated form control. The element can only contain pure text content or a `<template>` element, any other HTML elements would be ignored.
 
 When an `<error>` element is associated to an form control element (through the `for` attribute), author is opted in to use the `<error>` element to display validation messages instead of the pop up UI. When `setCustomValidity()` is called, the message will be displayed in the `<error>` element as well.
+
+The element behaves differently depending on its content:
+
+* Empty: when its associated form control is invalid, built-in validation messages will be displayed as the content.
+* Empty and the `validity` attribute has value: when its associated form control is invalid and its validity matches the `validity` value (case-insensitive), the built-in validation message will be displayed as the content.
+* Text content: triggers the associated form control’s invalid state with `customError` validity, the `validity` attribute is ignored if present.
+* A `<template>` and the `validity` attribute has value: when its associated form control is invalid and its validity matches the `validity` value (case-insensitive), the content inside `<template>` will be displayed as the content.
+* Otherwise: the element never becomes visible and should be ignored by the accessibility tree.
 
 ### Accessibility
 
@@ -88,7 +96,7 @@ If an `<error>` element’s `validity` attribute’s value is a built-in validit
 <label for="email">Email</label>
 <input name="email" id="email" type="email">
 <error for="email" validity="typemismatch">
-  Enter a valid email
+  <template>Enter a valid email</template>
 </error>
 ```
 
@@ -99,7 +107,9 @@ If an `<error>` element’s `validity` attribute’s value is a built-in validit
   <label><input type="radio" id="cat" value="cat" name="type">Cat</label>
   <label><input type="radio" id="fish" value="fish" name="type">Fish</label>
 
-  <error for="dog" validity="valuemissing">Choose a pet type</error>
+  <error for="dog" validity="valuemissing">
+    <template>Choose a pet type</template>
+  </error>
 </fieldset>
 ```
 
@@ -113,14 +123,23 @@ Authors can connect multiple `<error>` elements to the same `<input>` element.
 
 <!-- Customize built-in error -->
 <error for="email" validity="typemismatch">
-  Enter a valid email
+  <template>Enter a valid email</template>
 </error>
 
 <!-- Custom error -->
 <error for="email">
-  Must use an @example.com email
+  <template>Must use an @example.com email</template>
 </error>
 
 <!-- Container for all other errors, in this case, the built-in `valueMissing`'s validation message will be displayed here -->
 <error for="email"></error>
+```
+
+### Display custom validation message
+
+When a form control is server-side rendered with an invalid state, put the validation message directly in the `<error>` element.
+
+```html
+<input type="email" id="email" name="email" value="foo@example.com">
+<error for="email">Must use an @sample.com email address</error>
 ```
