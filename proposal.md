@@ -52,7 +52,7 @@ If multiple `<error>` elements associated to the same form control meet the disp
 * When the element is associated with a form control element by the `for` attribute, e.g. `<error for="my-input">…</error>`, the element is automatically added to the form element’s `ariaDescribedByElements` array ==TODO: this might need to be updated to `aria-errormessage` related property==
 * The element has an implicit `aria-live` value as `assertive`, this can be overridden by author by explicitly adding an `aria-live` attribute
 
-### DOM Interface
+### DOM interface
 
 ```
 interface HTMLErrorElement {
@@ -69,7 +69,7 @@ interface HTMLErrorElement {
 
 ==TODO==
 
-### CSS Pseudo classes
+### CSS pseudo classes
 
 ==TODO==
 
@@ -77,7 +77,7 @@ interface HTMLErrorElement {
 
 ## New `errors` property on form control elements
 
-A new property on `HTMLInputElement`, `HTMLSelectElement`, `HTMLButtonElement`, `HTMLFieldSetElement`, `HTMLObjectElement`, `HTMLOutputElement`, `HTMLTextAreaElement`, and `ElementInterals`, `errors`, as an array of references to the associated `<error>` elements (similar to the `labels` property).
+A new property, `errors`, on `HTMLInputElement`, `HTMLSelectElement`, `HTMLButtonElement`, `HTMLFieldSetElement`, `HTMLObjectElement`, `HTMLOutputElement`, `HTMLTextAreaElement`, and `ElementInterals`, as an array of references to the associated `<error>` elements (similar to the `labels` property).
 
 ## Use cases
 
