@@ -45,6 +45,8 @@ The element behaves differently depending on its content:
 
 If multiple `<error>` elements associated to the same form control meet the display content condition, the last `<error>` element will be shown.
 
+==TODO: what to do if the form control is disabled?==
+
 ### Accessibility
 
 * The element has an implicit ARIA Role: ==TODO: Check ARIA spec on which role is appropriate==
