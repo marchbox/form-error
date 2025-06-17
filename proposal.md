@@ -63,9 +63,12 @@ interface HTMLErrorElement {
 }
 ```
 
-### The `toggle` event
+### DOM events
 
-A `ToggleEvent` dispatches when the `<error>` element’s visibility changed.
+* `errorshow`: dispatches when the `<error>` element is shown
+* `errorhide`: dispatches when the `<error>` element is hidden
+
+Both events are generic `Event` objects.
 
 ### The CSS `:error-show` pseudo class
 
