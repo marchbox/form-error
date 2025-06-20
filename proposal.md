@@ -170,3 +170,4 @@ When a form control is server-side rendered with an invalid state, put the valid
 * Should HTML elements be allowed as children, e.g. `<a>`, `<ul>`, etc.?
 * For a server side rendered error (`<error>` with text content), should there be a declarative way to clear the error?
 * Should there be a declarative way to define multiple custom errors? For example, using regular expressions in an attribute like `pattern` or `match`?
+* Any cross shadow root issues that need to be address? Is the existing `ReferenceTarget` spec good enough?
