@@ -6,22 +6,16 @@ const VALID_CONTROL_ELEMENT_QUERY = [
 	"textarea",
 ].join(",");
 
+/**
+ * @typedef {(
+ *   HTMLInputElement |
+ *   HTMLFieldSetElement |
+ *   HTMLSelectElement |
+ *   HTMLTextAreaElement
+ * )} FormControlElement
+ */
+
 export default class FormError extends HTMLElement {
-	/** @type {string} */
-	#htmlFor = "";
-
-	/** @type {string} */
-	#validity = "";
-
-	/** @type {DocumentFragment} */
-	#content = new DocumentFragment();
-
-	/** @type {AbortController} */
-	#disconnectedAbortController = new AbortController();
-
-	/** @type {AbortController} */
-	#connectedControlAbortController = new AbortController();
-
 	static {
 		// biome-ignore lint/complexity/noThisInStatic: simplified regisstration
 		customElements.define("form-error", this);
@@ -29,12 +23,32 @@ export default class FormError extends HTMLElement {
 
 	static observedAttributes = ["for", "validity"];
 
+	/** @type {ShadowRoot} */
+	#shadow = this.attachShadow({ mode: "open" });
+
+	/** @type {ElementInternals} */
+	#internals = this.attachInternals();
+
+	/** @type {string} */
+	#htmlFor = "";
+
+	/** @type {string} */
+	#validity = "";
+
+	/** @type {HTMLDivElement} */
+	#contentContainer;
+
+	/** @type {AbortController} */
+	#connectedControlAbortController = new AbortController();
+
 	/** @return {DocumentFragment} */
 	get content() {
-		return this.#content;
+		const template = document.createElement("template");
+		template.innerHTML = this.#contentContainer?.innerHTML ?? "";
+		return template.content.cloneNode(true);
 	}
 
-	/** @return {HTMLInputElement | HTMLFieldSetElement | HTMLSelectElement | HTMLTextAreaElement | null} */
+	/** @return {FormControlElement | null} */
 	get control() {
 		return document.getElementById(this.#htmlFor);
 	}
@@ -75,6 +89,9 @@ export default class FormError extends HTMLElement {
 			return;
 		}
 
+		this.#internals.role = "alert";
+		this.#createShadow();
+
 		if (
 			this.control &&
 			!this.querySelector("template") &&
@@ -85,12 +102,10 @@ export default class FormError extends HTMLElement {
 			return;
 		}
 
-		this.append(this.#content);
 		this.#connectToControl();
 	}
 
 	disconnectedCallback() {
-		this.#disconnectedAbortController.abort();
 		this.#connectedControlAbortController.abort();
 	}
 
@@ -111,17 +126,16 @@ export default class FormError extends HTMLElement {
 	}
 
 	#show() {
+		this.#clear();
 		const msg = this.#getMessage();
 		if (msg) {
-			this.#content.appendChild(msg);
+			this.#contentContainer.append(msg);
 			this.dispatchEvent(new Event("errorshow", { bubbles: true }));
-		} else {
-			this.#clear();
 		}
 	}
 
 	#clear() {
-		this.#content.replaceChildren();
+		this.#contentContainer.replaceChildren();
 		this.dispatchEvent(new Event("errorhide", { bubbles: true }));
 	}
 
@@ -129,6 +143,14 @@ export default class FormError extends HTMLElement {
 		if (this.control.validity.valid || !this.#hasMatchingValidity()) {
 			this.#clear();
 		}
+	}
+
+	#createShadow() {
+		this.#shadow.innerHTML = `
+			<div style="display: contents;"></div>
+			<div hidden><slot></slot></div>
+		`;
+		this.#contentContainer = this.#shadow.querySelector("div");
 	}
 
 	/** @return {Node | string | null} */
@@ -181,7 +203,7 @@ export default class FormError extends HTMLElement {
 			case "valuemissing":
 				return this.control.validity.valueMissing;
 			default:
-				return false;
+				return !this.control.validity.valid;
 		}
 	}
 
@@ -206,11 +228,15 @@ export default class FormError extends HTMLElement {
 	}
 
 	#connectToControl() {
+		if (!this.control) {
+			return;
+		}
+
 		const { signal } = this.#connectedControlAbortController;
 
 		// TODO: Handle when the control element is a <fieldset>
 
-		this.control?.addEventListener(
+		this.control.addEventListener(
 			"invalid",
 			(evt) => {
 				evt.preventDefault();
@@ -219,12 +245,17 @@ export default class FormError extends HTMLElement {
 					return;
 				}
 
+				// Note: if multiple <form-error> elements associated to the same form
+				// control and multiple of them have matching validity, only the last
+				// <form-error>’s content will be announced.
+				this.control.ariaErrorMessageElements = [this];
+
 				this.#show();
 			},
 			{ signal },
 		);
 
-		this.control?.addEventListener(
+		this.control.addEventListener(
 			"blur",
 			() => {
 				this.#maybeClear();
@@ -232,7 +263,7 @@ export default class FormError extends HTMLElement {
 			{ signal },
 		);
 
-		this.control?.addEventListener(
+		this.control.addEventListener(
 			"keydown",
 			(evt) => {
 				if (evt.key === "Enter") {
@@ -242,7 +273,7 @@ export default class FormError extends HTMLElement {
 			{ signal },
 		);
 
-		this.control?.form?.addEventListener(
+		this.control.form?.addEventListener(
 			"reset",
 			() => {
 				this.#clear();

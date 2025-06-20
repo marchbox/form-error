@@ -55,11 +55,12 @@ If the associated form control is disabled, the `<error>` element becomes hidden
 
 ```ts
 interface HTMLErrorElement {
+  readonly content: DocumentFragment;
   readonly control: HTMLElement;
   readonly form: HTMLFormElement | null;
-  readonly content: DocumentFragment;
-  htmlFor: IDREF;
-  validity: DOMTokenList;
+  htmlFor: string;
+  validity: string;
+  readonly validityList: DOMTokenList;
 }
 ```
 
