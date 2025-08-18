@@ -18,7 +18,56 @@ However, the current Constraint Validation API has a few shortcomings:
 * Support server side rendered error that also sets the associated form control to invalid state
 * Compliant with WCAG 2.2
 
-## The `<error>` element
+## Solution 1: Enhacing the `<output>` element
+
+```html
+<label for="email">Email</label>
+<input name="email" id="email" placeholder="foo@bar.com">
+<output for="email" name="emailerror" validity></output>
+```
+
+```html
+<label for="email">Email</label>
+<input name="email" id="email" placeholder="foo@bar.com">
+<output for="email" name="emailerror" validity="valuemissing typemismatch"></output>
+```
+
+```html
+<label for="email">Email</label>
+<input name="email" id="email" placeholder="foo@bar.com">
+<output for="email" name="emailerror" validity>
+  <template>Something is wrong</template>
+</output>
+```
+
+```html
+<label for="email">Email</label>
+<input name="email" id="email" placeholder="foo@bar.com">
+<output for="email" name="emailerror" validity="valuemissing">
+  <template>Fill the email to help us contact you.</template>
+</output>
+<output for="email" name="emailerror" validity="typemismatch">
+  <template>Use a valid email.</template>
+</output>
+```
+
+```html
+<label for="email">Email</label>
+<input name="email" id="email" placeholder="foo@bar.com">
+<output for="email" name="emailerror" validity>
+  Something wrong from the server-side.
+</output>
+```
+
+New features for `<output>`:
+
+* The `validity` attribute enables validation message mode
+* Calling `setCustomValidity()` would insert the given message as a `Text` child node
+* `:valid` and `:invalid` states, message is displayed if `:invalid` state is on
+* Ensures an implicit ARIA role of `alert`
+* When invliad, the associated form control’s `ariaErrorMessageElements` references the `<output>`
+
+## Solution 2: The `<error>` element
 
 The container of the validation message for its associated form control. The element can only contain pure text content or a `<template>` element, any other HTML elements would be ignored.
 
@@ -50,19 +99,6 @@ If the associated form control is disabled, the `<error>` element becomes hidden
 
 * The element has an implicit ARIA role of `alert` (which makes it a live region)
 * The element is added to the form element’s `ariaErrorMessageElements`
-
-### DOM interface
-
-```ts
-interface HTMLErrorElement {
-  readonly content: DocumentFragment;
-  readonly control: HTMLElement;
-  readonly form: HTMLFormElement | null;
-  htmlFor: string;
-  validity: string;
-  readonly validityList: DOMTokenList;
-}
-```
 
 ### DOM events
 
