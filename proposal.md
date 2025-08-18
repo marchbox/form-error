@@ -67,6 +67,16 @@ New features for `<output>`:
 * Ensures an implicit ARIA role of `alert`
 * When invliad, the associated form control’s `ariaErrorMessageElements` references the `<output>`
 
+Pros:
+
+* Reusing an existing element
+* `<output>` already comes with semantics that meet the needs of a validation message display element
+
+Cons:
+
+* How does the constaint validation API work on an `<output>`? And how does the new addition affect that?
+
+
 ## Solution 2: The `<error>` element
 
 The container of the validation message for its associated form control. The element can only contain pure text content or a `<template>` element, any other HTML elements would be ignored.

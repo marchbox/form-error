@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <meta charset="utf-8">
+  <title>&lt;form-error&gt; demo</title>
+  <meta name="viewport" content="initial-scale=1,width=device-width">
+  <style>
+    html {
+      color-scheme: light dark;
+    }
+
+    body {
+      font-family: sans-serif;
+    }
+
+    output[is="validity-output"] {
+      display: inline-block;
+      min-block-size: 1lh;
+    }
+  </style>
+
+  <h1><code>&lt;form-error&gt;</code> demo</h1>
+
+  <form onsubmit="return false">
+    <ol>
+      <li>
+        <label for="email">Email</label>
+        <input name="email" id="email" placeholder="foo@bar.com">
+        <ul>
+          <li>
+            <output is="validity-output" for="email" name="emailerror" validity>
+            </output>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <label for="email">Email</label>
+        <input name="email" id="email" placeholder="foo@bar.com">
+        <ul>
+          <li>
+            <output is="validity-output" for="email" name="emailerror"
+              validity="valuemissing typemismatch"
+            ></output>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <label for="email">Email</label>
+        <input name="email" id="email" placeholder="foo@bar.com">
+        <ul>
+          <li>
+            <output is="validity-output" for="email" name="emailerror" validity>
+              <template>Something is wrong</template>
+            </output>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <label for="email">Email</label>
+        <input name="email" id="email" placeholder="foo@bar.com">
+        <ul>
+          <li>
+            <output is="validity-output" for="email" name="emailerror"
+              validity="valuemissing"
+            >
+              <template>Fill the email to help us contact you.</template>
+            </output>
+          </li>
+          <li>
+            <output is="validity-output" for="email" name="emailerror"
+              validity="typemismatch"
+            >
+              <template>Use a valid email.</template>
+            </output>
+          </li>
+        </ul>
+      </li>
+    </ol>
+    <button>Submit</button>
+    <button type="reset">Reset</button>
+  </form>
+
+  <script src="output.js" type="module"></script>
+</html>
+
