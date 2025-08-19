@@ -18,7 +18,7 @@ However, the current Constraint Validation API has a few shortcomings:
 * Support server side rendered error that also sets the associated form control to invalid state
 * Compliant with WCAG 2.2
 
-## Solution 1: Enhacing the `<output>` element
+## Solution 1: Enhancing the `<output>` element
 
 ```html
 <label for="email">Email</label>
