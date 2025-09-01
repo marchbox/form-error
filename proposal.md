@@ -33,11 +33,11 @@ In order to mark up declarative validation messages, I’m proposing 2 options:
 1. Enhancing the existing `<output>` element
 2. Add a new `<error>` element
 
-But both options share a similar set of mechanisms. I’ll illustrate the abstract mechanisms first, then detail the pros and cons of each option. We’ll use the term “display element” to represent the element that display the validation messages, it could either represent an `<output>` element or an `<error>` element.
+But both options share a similar set of mechanisms. I’ll illustrate the abstract mechanisms first, then detail the pros and cons of each option. We’ll use the term “display element” to represent the element that displays the validation messages, it could either be an `<output>` element or an `<error>` element.
 
 ### How it works
 
-* The *display element* has a `for` attribute (and an `htmlFor` property) to declare the association between the itself and a form control element
+* The *display element* has a `for` attribute (and an `htmlFor` property) to declare the association between itself and a form control element
     * When the associated form control element is invalid, browser should add the *display element* to its  `ariaErrorMessageElements` property
 * The `validity` attribute
     * Authors can provide a list of space-separated strings as its value, to represent which built-in validities’ validation messages the element should display. The names of the built-in validities are case insensitive, e.g. `valueMissing` can be represented as `valueMissing` or `valuemissing` in the attribute value
