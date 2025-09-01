@@ -26,20 +26,16 @@ However, the current Constraint Validation API has a few shortcomings:
 
 ==TODO==
 
-## Proposals
+## Abstract proposal
 
 In order to mark up declarative validation messages, I’m proposing 2 options:
 
 1. Enhancing the existing `<output>` element
 2. Add a new `<error>` element
 
-But both options share a similar set of mechanisms. I’ll illustrate the abstract mechanisms first, then detail the pros and cons of each option.
+But both options share a similar set of mechanisms. I’ll illustrate the abstract mechanisms first, then detail the pros and cons of each option. We’ll use the term “display element” to represent the element that display the validation messages, it could either represent an `<output>` element or an `<error>` element.
 
-### Abstract proposal
-
-We’ll use the term “display element” to represent the element that display the validation messages, it could either represent an `<output>` element or an `<error>` element.
-
-The mechanisms:
+### How it works
 
 * The *display element* has a `for` attribute (and an `htmlFor` property) to declare the association between the itself and a form control element
     * When the associated form control element is invalid, browser should add the *display element* to its  `ariaErrorMessageElements` property
@@ -59,9 +55,11 @@ The mechanisms:
 | `<template>` | Yes | Matching `validity` attribute | The `<template>`’s content |
 | Text | (Ignored) | Always `customError` | Author’s text content |
 
-If multiple `<error>` elements associated to the same form control meet the display content condition, all the `<error>` elements will be shown.
+If multiple *display elements* associated to the same form control meet the display content condition, all the `<error>` elements will be shown.
 
-Usages:
+### Examples
+
+The `<display-element>` in the example code represents either an `<output>` element or an `<error>` element. When it repreents an `<output>` element, the `validity` attribute should always be present.
 
 Display any built-in validation message:
 
@@ -128,7 +126,7 @@ Display a built-in server rendered validation message:
 </display-element>
 ```
 
-### Proposal 1: Enhancing the `<output>` element
+## Proposal 1: Enhancing the `<output>` element
 
 In [HTML spec](https://html.spec.whatwg.org/multipage/form-elements.html#the-output-element), the `<output>` element is defined as “the result of a calculation performed by the application, or the result of a user action”. “The result of a user action“ aligns well with the semantic of validation messages.
 
@@ -140,18 +138,18 @@ Additionally, the `<output>` element has a few existing features that aligns wel
 
 The presence of the `validity` attribute opts in the `<output>` element for displaying validation messages, and gives the element an implicit ARIA role of `alert`. The attribute can be a boolean type or a string type.
 
-Pending questions:
+### Pending questions
 
 * How does the Constraint Validation API work on an `<output>`, e.g. what does it do by calling `reportValidity()` on a `HTMLOutputElement`? And how does the new additions affect that?
 * `HTMLOutputElement` has a `validity` property, is it confusing that it gains `validity` attribute and `validityList` property?
 * Should an `<output>` be allowed to associate with multiple form controls when `validity` attribute is present?
 
 
-### Proposal 2: New `<error>` element
+## Proposal 2: New `<error>` element
 
 A new HTML element, `<error>`, as the container to display validation messages. It doesn’t come with any existing semantics and functionalities that may be conflict with the new features.
 
-Pending questions:
+### Pending questions
 
 * Alternative names: `<formerror>`, `<validationmessage>`
 
