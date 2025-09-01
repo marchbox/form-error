@@ -1,10 +1,7 @@
 import * as fs from 'node:fs';
 import * as http from 'node:http';
-import * as path from 'node:path';
-import * as process from 'node:process';
 
 const PORT = 8000;
-let isInit = true;
 
 const EXT_2_MIME = new Map([
   ['html', 'text/html; charset=UTF-8'],
@@ -29,5 +26,5 @@ http.createServer(async (req, res) => {
   }
 }).listen(PORT);
 
-console.log(`Server running at http://localhost:${PORT}/demo.html`);
+console.log(`Server running at http://localhost:${PORT}`);
 
