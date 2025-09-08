@@ -47,15 +47,19 @@ But both options share a similar set of mechanisms. I’ll illustrate the abstra
 * If the associated form control element is disabled, add `:disabled` pseudo class to the *display element*
 * The element behaves differently depending on the `validity` attribute value and its child content.
 
-| Child content | `validity` attribute has string values? | Form control’s validity needed to display content | Displayed content |
-|:-|:-|:-|:-|
-| Empty | No | Any invalid  | Built-in validation message |
-| Empty | Yes | Matching `validity` attribute | Built-in validation message |
-| `<template>` | No | Any invalid  | Built-in validation message (`<template>` is ignored) |
-| `<template>` | Yes | Matching `validity` attribute | The `<template>`’s content |
-| Text | (Ignored) | Always `customError` | Author’s text content |
+   | Child content | `validity` attribute has string values? | Form control’s validity needed to display content | Displayed content |
+   |:-|:-|:-|:-|
+   | Empty | No | Any invalid  | Built-in validation message |
+   | Empty | Yes | Matching `validity` attribute | Built-in validation message |
+   | `<template>` | No | Any invalid  | Built-in validation message (`<template>` is ignored) |
+   | `<template>` | Yes | Matching `validity` attribute | The `<template>`’s content |
+   | Text | (Ignored) | Always `customError` | Author’s text content |
 
-If multiple *display elements* associated to the same form control meet the display content condition, all the `<error>` elements will be shown.
+* The `clearedby` attribute
+   * Similar to `closedby` attribute on `<dialog>`, it specifies the type of user actions needed to clear the validation message
+   * `none`: the validation message can only be cleared with a developer-specific mechanism
+   * `input`: the validation message can be cleared if the user updates the associate form control’s value and the value is valid
+* If multiple *display elements* associated to the same form control meet the display content condition, all the display elements will have `:invalid` state enabled.
 
 ### Examples
 
@@ -158,6 +162,5 @@ A new HTML element, `<error>`, as the container to display validation messages. 
 These questions applies to both proposals:
 
 * Should HTML elements be allowed as children, e.g. `<a>`, `<ul>`?
-* For a server rendered validation message, should there be a declarative way to clear the message?
 * Should there be a declarative way to define multiple custom errors? For example, using regular expressions in an attribute like `pattern` or `match`?
 * Any cross shadow root issues that need to be address? Is the existing `ReferenceTarget` spec good enough?
