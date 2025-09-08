@@ -42,9 +42,6 @@ But both options share a similar set of mechanisms. I’ll illustrate the abstra
 * The `validity` attribute
     * Authors can provide a list of space-separated strings as its value, to represent which built-in validities’ validation messages the element should display. The names of the built-in validities are case insensitive, e.g. `valueMissing` can be represented as `valueMissing` or `valuemissing` in the attribute value
     * The attribute is reflected by the `validityList` property, as a `DOMTokenList`
-* Supports `:valid` and `:invalid` pseudo classes.
-    * The `:invalid` pseudo class is added when the associated form control element has :invalid` added
-* If the associated form control element is disabled, add `:disabled` pseudo class to the *display element*
 * The element behaves differently depending on the `validity` attribute value and its child content.
 
    | Child content | `validity` attribute has string values? | Form control’s validity needed to display content | Displayed content |
@@ -55,11 +52,14 @@ But both options share a similar set of mechanisms. I’ll illustrate the abstra
    | `<template>` | Yes | Matching `validity` attribute | The `<template>`’s content |
    | Text | (Ignored) | Always `customError` | Author’s text content |
 
+* Supports `:valid` and `:invalid` pseudo classes.
+    * The `:invalid` pseudo class is added when the associated form control element has :invalid` added
 * The `clearedby` attribute
    * Similar to `closedby` attribute on `<dialog>`, it specifies the type of user actions needed to clear the validation message
    * `none`: the validation message can only be cleared with a developer-specific mechanism
    * `input`: the validation message can be cleared if the user updates the associate form control’s value and the value is valid
-* If multiple *display elements* associated to the same form control meet the display content condition, all the display elements will have `:invalid` state enabled.
+* If multiple *display elements* associated to the same form control meet the display content condition, all the display elements will have `:invalid` state enabled
+* If the associated form control element is disabled, add `:disabled` pseudo class to the *display element*
 
 ### Examples
 
