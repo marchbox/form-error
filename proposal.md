@@ -132,7 +132,7 @@ Display a built-in server rendered validation message:
 
 ## Proposal 1: Enhancing the `<output>` element
 
-In [HTML spec](https://html.spec.whatwg.org/multipage/form-elements.html#the-output-element), the `<output>` element is defined as “the result of a calculation performed by the application, or the result of a user action”. “The result of a user action“ aligns well with the semantic of validation messages.
+In [HTML spec](https://html.spec.whatwg.org/multipage/form-elements.html#the-output-element), the `<output>` element is defined as “the result of a calculation performed by the application, or the result of a user action”. “The result of a user action“ aligns well with the semantic of validation messages. [Some developers](https://denodell.com/blog/html-best-kept-secret-output-tag) already expect this functionality from the `<output>` element.
 
 Additionally, the `<output>` element has a few existing features that aligns well with the functions of validation messages:
 
